@@ -216,11 +216,18 @@ if [ -f "$HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
 fi
 ZSHRC
 
+# Create .zprofile for login shells (used by ssh with zsh -lc)
+echo "⚙️  Creating .zprofile for login shells..."
+cat > "$HOME/.zprofile" <<'ZPROFILE'
+# Load cargo environment if it exists
+[ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
+ZPROFILE
+
 # Set Zsh as default shell
 if [ "$SHELL" != "$(which zsh)" ]; then
     echo "Setting Zsh as default shell..."
     sudo chsh -s $(which zsh) $USER
-    echo "✓ Zsh configured with history and set as default shell"
+    echo "✓ Zsh configured with .zprofile, .zshrc, and set as default shell"
 else
     echo "✓ Zsh already configured"
 fi
