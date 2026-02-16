@@ -139,6 +139,72 @@ else
     echo "✓ kubectl already installed"
 fi
 
+# Install Google Cloud CLI
+echo "☁️  Installing Google Cloud CLI..."
+if ! command -v gcloud &> /dev/null; then
+    echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+    sudo apt update
+    sudo apt install -y google-cloud-cli
+    echo "✓ Google Cloud CLI installed successfully"
+else
+    echo "✓ Google Cloud CLI already installed"
+fi
+
+# Install and configure Zsh
+echo "💻 Installing Zsh..."
+if ! command -v zsh &> /dev/null; then
+    sudo apt install -y zsh
+    echo "✓ Zsh installed successfully"
+else
+    echo "✓ Zsh already installed"
+fi
+
+# Configure Zsh history
+echo "⚙️  Configuring Zsh history..."
+cat > "$HOME/.zshrc" <<'ZSHRC'
+# History configuration
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt SHARE_HISTORY          # Share history between sessions
+setopt HIST_IGNORE_ALL_DUPS   # Don't save duplicates
+setopt HIST_IGNORE_SPACE      # Don't save commands starting with space
+setopt HIST_REDUCE_BLANKS     # Remove extra blanks
+setopt INC_APPEND_HISTORY     # Add commands immediately
+
+# Better history search with arrow keys
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey "^[[A" up-line-or-beginning-search
+bindkey "^[[B" down-line-or-beginning-search
+
+# Enable colors
+autoload -U colors && colors
+
+# Better prompt
+PS1="%{$fg[green]%}%n@%m%{$reset_color%}:%{$fg[blue]%}%~%{$reset_color%}$ "
+
+# Aliases
+alias ll='ls -lah'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Load cargo environment if it exists
+[ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
+ZSHRC
+
+# Set Zsh as default shell
+if [ "$SHELL" != "$(which zsh)" ]; then
+    echo "Setting Zsh as default shell..."
+    sudo chsh -s $(which zsh) $USER
+    echo "✓ Zsh configured with history and set as default shell"
+else
+    echo "✓ Zsh already configured"
+fi
+
 # Install Mutagen (for file syncing if needed)
 echo "🔄 Installing Mutagen..."
 if ! command -v mutagen &> /dev/null; then
@@ -156,16 +222,18 @@ echo "✅ Setup Complete!"
 echo "================================"
 echo ""
 echo "Installed versions:"
-echo "  Docker:    $(docker --version)"
-echo "  Rust:      $(rustc --version)"
-echo "  Cargo:     $(cargo --version)"
-echo "  Java:      $(java --version | head -1)"
-echo "  Node.js:   $(node --version)"
-echo "  npm:       $(npm --version)"
-echo "  Tailscale: $(tailscale --version)"
-echo "  Azure CLI: $(az --version | head -1)"
-echo "  Terraform: $(terraform --version | head -1)"
-echo "  kubectl:   $(kubectl version --client --short 2>/dev/null || echo 'kubectl installed')"
+echo "  Docker:      $(docker --version)"
+echo "  Rust:        $(rustc --version)"
+echo "  Cargo:       $(cargo --version)"
+echo "  Java:        $(java --version | head -1)"
+echo "  Node.js:     $(node --version)"
+echo "  npm:         $(npm --version)"
+echo "  Tailscale:   $(tailscale --version)"
+echo "  Azure CLI:   $(az --version | head -1)"
+echo "  Terraform:   $(terraform --version | head -1)"
+echo "  kubectl:     $(kubectl version --client --short 2>/dev/null || echo 'kubectl installed')"
+echo "  Google Cloud: $(gcloud --version | head -1)"
+echo "  Zsh:         $(zsh --version)"
 echo ""
 echo "⚠️  IMPORTANT:"
 echo "  1. Log out and back in for Docker group membership to take effect"

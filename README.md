@@ -21,6 +21,8 @@ curl -sSL https://raw.githubusercontent.com/GrepCoder/devbox/main/setup-devbox.s
 ✅ **Azure CLI** - For Azure cloud management
 ✅ **Terraform** - Infrastructure as Code
 ✅ **kubectl** - Kubernetes CLI
+✅ **Google Cloud CLI** - For GCP management
+✅ **Zsh** - Modern shell with history configuration
 ✅ **QEMU Guest Agent** - For Proxmox integration
 ✅ **Mutagen** - For file syncing
 
@@ -47,7 +49,14 @@ After the script completes:
    az --version
    terraform --version
    kubectl version --client
+   gcloud --version
+   zsh --version
    ```
+
+4. **Start using Zsh** (after reboot, Zsh will be your default shell):
+   - History is configured with 10,000 entries
+   - Arrow keys search through history intelligently
+   - Shared history between terminal sessions
 
 ## Manual Installation
 
