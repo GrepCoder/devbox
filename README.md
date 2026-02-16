@@ -18,6 +18,9 @@ curl -sSL https://raw.githubusercontent.com/GrepCoder/devbox/main/setup-devbox.s
 ✅ **Java** - OpenJDK 21 LTS
 ✅ **Node.js** - v22 LTS
 ✅ **Tailscale** - For remote access
+✅ **Azure CLI** - For Azure cloud management
+✅ **Terraform** - Infrastructure as Code
+✅ **kubectl** - Kubernetes CLI
 ✅ **QEMU Guest Agent** - For Proxmox integration
 ✅ **Mutagen** - For file syncing
 
@@ -41,6 +44,9 @@ After the script completes:
    rustc --version
    node --version
    java --version
+   az --version
+   terraform --version
+   kubectl version --client
    ```
 
 ## Manual Installation

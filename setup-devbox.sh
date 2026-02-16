@@ -106,6 +106,39 @@ else
     echo "✓ Tailscale already installed"
 fi
 
+# Install Azure CLI
+echo "☁️  Installing Azure CLI..."
+if ! command -v az &> /dev/null; then
+    curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+    echo "✓ Azure CLI installed successfully"
+else
+    echo "✓ Azure CLI already installed"
+fi
+
+# Install Terraform
+echo "🏗️  Installing Terraform..."
+if ! command -v terraform &> /dev/null; then
+    wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+    echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+    sudo apt update
+    sudo apt install -y terraform
+    echo "✓ Terraform installed successfully"
+else
+    echo "✓ Terraform already installed"
+fi
+
+# Install kubectl
+echo "⚓ Installing kubectl..."
+if ! command -v kubectl &> /dev/null; then
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+    sudo apt update
+    sudo apt install -y kubectl
+    echo "✓ kubectl installed successfully"
+else
+    echo "✓ kubectl already installed"
+fi
+
 # Install Mutagen (for file syncing if needed)
 echo "🔄 Installing Mutagen..."
 if ! command -v mutagen &> /dev/null; then
@@ -130,6 +163,9 @@ echo "  Java:      $(java --version | head -1)"
 echo "  Node.js:   $(node --version)"
 echo "  npm:       $(npm --version)"
 echo "  Tailscale: $(tailscale --version)"
+echo "  Azure CLI: $(az --version | head -1)"
+echo "  Terraform: $(terraform --version | head -1)"
+echo "  kubectl:   $(kubectl version --client --short 2>/dev/null || echo 'kubectl installed')"
 echo ""
 echo "⚠️  IMPORTANT:"
 echo "  1. Log out and back in for Docker group membership to take effect"
