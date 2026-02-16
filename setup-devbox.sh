@@ -191,14 +191,6 @@ setopt HIST_IGNORE_SPACE      # Don't save commands starting with space
 setopt HIST_REDUCE_BLANKS     # Remove extra blanks
 setopt INC_APPEND_HISTORY     # Add commands immediately
 
-# Better history search with arrow keys
-autoload -U up-line-or-beginning-search
-autoload -U down-line-or-beginning-search
-zle -N up-line-or-beginning-search
-zle -N down-line-or-beginning-search
-bindkey "^[[A" up-line-or-beginning-search
-bindkey "^[[B" down-line-or-beginning-search
-
 # Enable colors
 autoload -U colors && colors
 
@@ -213,12 +205,9 @@ alias l='ls -CF'
 # Load cargo environment if it exists
 [ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
 
-# Load zsh-autosuggestions (shows suggestions as you type)
+# Load zsh-autosuggestions (shows suggestions as you type - press → to accept)
 if [ -f "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
     source "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh"
-    # Accept suggestion with right arrow or End key
-    bindkey '^[[C' forward-char  # Right arrow
-    bindkey '^[[F' end-of-line   # End key
 fi
 
 # Load zsh-syntax-highlighting (must be last)
