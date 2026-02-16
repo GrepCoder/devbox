@@ -160,8 +160,26 @@ else
     echo "✓ Zsh already installed"
 fi
 
-# Configure Zsh history
-echo "⚙️  Configuring Zsh history..."
+# Install zsh-autosuggestions plugin
+echo "⚙️  Installing zsh-autosuggestions..."
+if [ ! -d "$HOME/.zsh/zsh-autosuggestions" ]; then
+    git clone https://github.com/zsh-users/zsh-autosuggestions "$HOME/.zsh/zsh-autosuggestions"
+    echo "✓ zsh-autosuggestions installed"
+else
+    echo "✓ zsh-autosuggestions already installed"
+fi
+
+# Install zsh-syntax-highlighting plugin
+echo "⚙️  Installing zsh-syntax-highlighting..."
+if [ ! -d "$HOME/.zsh/zsh-syntax-highlighting" ]; then
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting "$HOME/.zsh/zsh-syntax-highlighting"
+    echo "✓ zsh-syntax-highlighting installed"
+else
+    echo "✓ zsh-syntax-highlighting already installed"
+fi
+
+# Configure Zsh with plugins
+echo "⚙️  Configuring Zsh with auto-suggestions..."
 cat > "$HOME/.zshrc" <<'ZSHRC'
 # History configuration
 HISTFILE=~/.zsh_history
@@ -194,6 +212,19 @@ alias l='ls -CF'
 
 # Load cargo environment if it exists
 [ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
+
+# Load zsh-autosuggestions (shows suggestions as you type)
+if [ -f "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
+    source "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh"
+    # Accept suggestion with right arrow or End key
+    bindkey '^[[C' forward-char  # Right arrow
+    bindkey '^[[F' end-of-line   # End key
+fi
+
+# Load zsh-syntax-highlighting (must be last)
+if [ -f "$HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
+    source "$HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
 ZSHRC
 
 # Set Zsh as default shell
