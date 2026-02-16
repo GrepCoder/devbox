@@ -7,7 +7,7 @@ Automated development environment setup scripts for quick VM/server provisioning
 Run this one-liner on a fresh Ubuntu installation:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/nhlbo/devbox/main/setup-devbox.sh | bash
+curl -sSL https://raw.githubusercontent.com/GrepCoder/devbox/main/setup-devbox.sh | bash
 ```
 
 ## What Gets Installed
