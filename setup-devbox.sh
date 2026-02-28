@@ -139,6 +139,19 @@ else
     echo "✓ kubectl already installed"
 fi
 
+# Install Helm
+echo "⛵ Installing Helm..."
+if ! command -v helm &> /dev/null; then
+    curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+    sudo apt install -y apt-transport-https
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+    sudo apt update
+    sudo apt install -y helm
+    echo "✓ Helm installed successfully"
+else
+    echo "✓ Helm already installed"
+fi
+
 # Install Google Cloud CLI
 echo "☁️  Installing Google Cloud CLI..."
 if ! command -v gcloud &> /dev/null; then
@@ -258,7 +271,8 @@ echo "  npm:         $(npm --version)"
 echo "  Tailscale:   $(tailscale --version)"
 echo "  Azure CLI:   $(az --version | head -1)"
 echo "  Terraform:   $(terraform --version | head -1)"
-echo "  kubectl:     $(kubectl version --client --short 2>/dev/null || echo 'kubectl installed')"
+echo "  kubectl:     $(kubectl version --client --short 2>/dev/null || echo 'kubectl installed')
+  Helm:        $(helm version --short 2>/dev/null || echo 'helm installed')"
 echo "  Google Cloud: $(gcloud --version | head -1)"
 echo "  Zsh:         $(zsh --version)"
 echo ""
