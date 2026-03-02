@@ -217,6 +217,9 @@ alias l='ls -CF'
 # Load cargo environment if it exists
 [ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
 
+# Add OpenCode to PATH
+export PATH="$HOME/.opencode/bin:$PATH"
+
 # Load zsh-autosuggestions (shows suggestions as you type - press → to accept)
 if [ -f "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
     source "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh"
@@ -233,6 +236,9 @@ echo "⚙️  Creating .zprofile for login shells..."
 cat > "$HOME/.zprofile" <<'ZPROFILE'
 # Load cargo environment if it exists
 [ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
+
+# Add OpenCode to PATH
+export PATH="$HOME/.opencode/bin:$PATH"
 ZPROFILE
 
 # Set Zsh as default shell
@@ -262,13 +268,13 @@ if ! command -v opencode &> /dev/null; then
     curl -fsSL https://opencode.ai/install | bash
 
     # Add opencode to PATH for current session
-    export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+    export PATH="$HOME/.opencode/bin:$HOME/.local/bin:$PATH"
 
     # Create systemd service for OpenCode server
     echo "⚙️  Creating OpenCode systemd service..."
     sudo tee /etc/systemd/system/opencode-server.service > /dev/null <<EOF
 [Unit]
-Description=OpenCode Server
+Description=OpenCode Web Server
 After=network.target
 Wants=network.target
 
@@ -276,9 +282,9 @@ Wants=network.target
 Type=simple
 User=$USER
 Environment=HOME=$HOME
-Environment=PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PATH=$HOME/.opencode/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin
 WorkingDirectory=$HOME
-ExecStart=$HOME/bin/opencode server --host 0.0.0.0 --port 8080
+ExecStart=$HOME/.opencode/bin/opencode web --hostname 0.0.0.0 --port 4096
 Restart=always
 RestartSec=10
 KillMode=process
@@ -294,7 +300,7 @@ EOF
 
     echo "✓ OpenCode installed and configured as system service"
     echo "✓ OpenCode server will start automatically on boot"
-    echo "✓ Server running on port 8080"
+    echo "✓ Server running on port 4096"
 else
     echo "✓ OpenCode already installed"
 
@@ -303,7 +309,7 @@ else
         echo "⚙️  Creating OpenCode systemd service..."
         sudo tee /etc/systemd/system/opencode-server.service > /dev/null <<EOF
 [Unit]
-Description=OpenCode Server
+Description=OpenCode Web Server
 After=network.target
 Wants=network.target
 
@@ -311,9 +317,9 @@ Wants=network.target
 Type=simple
 User=$USER
 Environment=HOME=$HOME
-Environment=PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PATH=$HOME/.opencode/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin
 WorkingDirectory=$HOME
-ExecStart=$HOME/bin/opencode server --host 0.0.0.0 --port 8080
+ExecStart=$HOME/.opencode/bin/opencode web --hostname 0.0.0.0 --port 4096
 Restart=always
 RestartSec=10
 KillMode=process
@@ -355,7 +361,7 @@ echo ""
 echo "⚠️  IMPORTANT:"
 echo "  1. Log out and back in for Docker group membership to take effect"
 echo "  2. Run 'sudo tailscale up' to connect to your Tailnet"
-echo "  3. OpenCode server is running on port 8080 and will auto-start on boot"
+echo "  3. OpenCode server is running on port 4096 and will auto-start on boot"
 echo "  4. Check OpenCode service status: sudo systemctl status opencode-server"
 echo "  5. Reboot recommended: sudo reboot"
 echo ""
