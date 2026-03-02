@@ -256,6 +256,82 @@ else
     echo "✓ Mutagen already installed"
 fi
 
+# Install OpenCode
+echo "🤖 Installing OpenCode..."
+if ! command -v opencode &> /dev/null; then
+    # Install OpenCode using the official install script
+    curl -fsSL https://opencode.ai/install | bash
+
+    # Add opencode to PATH for current session
+    export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+
+    # Create systemd service for OpenCode server
+    echo "⚙️  Creating OpenCode systemd service..."
+    sudo tee /etc/systemd/system/opencode-server.service > /dev/null <<EOF
+[Unit]
+Description=OpenCode Server
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=$USER
+Environment=HOME=$HOME
+Environment=PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin
+WorkingDirectory=$HOME
+ExecStart=$HOME/bin/opencode server --host 0.0.0.0 --port 8080
+Restart=always
+RestartSec=10
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+    # Enable and start the service
+    sudo systemctl daemon-reload
+    sudo systemctl enable opencode-server.service
+    sudo systemctl start opencode-server.service
+
+    echo "✓ OpenCode installed and configured as system service"
+    echo "✓ OpenCode server will start automatically on boot"
+    echo "✓ Server running on port 8080"
+else
+    echo "✓ OpenCode already installed"
+
+    # Check if service exists, if not create it
+    if ! sudo systemctl is-enabled opencode-server.service &> /dev/null; then
+        echo "⚙️  Creating OpenCode systemd service..."
+        sudo tee /etc/systemd/system/opencode-server.service > /dev/null <<EOF
+[Unit]
+Description=OpenCode Server
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=$USER
+Environment=HOME=$HOME
+Environment=PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin
+WorkingDirectory=$HOME
+ExecStart=$HOME/bin/opencode server --host 0.0.0.0 --port 8080
+Restart=always
+RestartSec=10
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+        sudo systemctl daemon-reload
+        sudo systemctl enable opencode-server.service
+        sudo systemctl start opencode-server.service
+        echo "✓ OpenCode service configured and started"
+    else
+        echo "✓ OpenCode service already configured"
+    fi
+fi
+
 echo ""
 echo "================================"
 echo "✅ Setup Complete!"
@@ -272,12 +348,15 @@ echo "  Tailscale:   $(tailscale --version)"
 echo "  Azure CLI:   $(az --version | head -1)"
 echo "  Terraform:   $(terraform --version | head -1)"
 echo "  kubectl:     $(kubectl version --client --short 2>/dev/null || echo 'kubectl installed')
-  Helm:        $(helm version --short 2>/dev/null || echo 'helm installed')"
+  Helm:        $(helm version --short 2>/dev/null | cut -d'+' -f1 || echo 'helm installed')"
 echo "  Google Cloud: $(gcloud --version | head -1)"
 echo "  Zsh:         $(zsh --version)"
+echo "  OpenCode:    $(opencode --version 2>/dev/null || echo 'OpenCode installed')"
 echo ""
 echo "⚠️  IMPORTANT:"
 echo "  1. Log out and back in for Docker group membership to take effect"
 echo "  2. Run 'sudo tailscale up' to connect to your Tailnet"
-echo "  3. Reboot recommended: sudo reboot"
+echo "  3. OpenCode server is running on port 8080 and will auto-start on boot"
+echo "  4. Check OpenCode service status: sudo systemctl status opencode-server"
+echo "  5. Reboot recommended: sudo reboot"
 echo ""

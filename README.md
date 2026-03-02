@@ -21,6 +21,7 @@ curl -sSL https://raw.githubusercontent.com/GrepCoder/devbox/main/setup-devbox.s
 ✅ **Azure CLI** - For Azure cloud management
 ✅ **Terraform** - Infrastructure as Code
 ✅ **kubectl** - Kubernetes CLI
+✅ **Helm** - Kubernetes package manager
 ✅ **Google Cloud CLI** - For GCP management
 ✅ **Zsh** - Modern shell with history configuration
 ✅ **QEMU Guest Agent** - For Proxmox integration
@@ -49,6 +50,7 @@ After the script completes:
    az --version
    terraform --version
    kubectl version --client
+   helm version --short
    gcloud --version
    zsh --version
    ```
