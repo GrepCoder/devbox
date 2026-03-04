@@ -22,7 +22,9 @@ curl -sSL https://raw.githubusercontent.com/GrepCoder/devbox/main/setup-devbox.s
 ✅ **Terraform** - Infrastructure as Code
 ✅ **kubectl** - Kubernetes CLI
 ✅ **Helm** - Kubernetes package manager
+✅ **GitHub CLI** - GitHub from the command line
 ✅ **Google Cloud CLI** - For GCP management
+✅ **OpenCode** - AI coding assistant (runs as a system service on port 4096)
 ✅ **Zsh** - Modern shell with history configuration
 ✅ **QEMU Guest Agent** - For Proxmox integration
 ✅ **Mutagen** - For file syncing
@@ -51,11 +53,19 @@ After the script completes:
    terraform --version
    kubectl version --client
    helm version --short
+   gh --version
    gcloud --version
    zsh --version
+   opencode --version
    ```
 
-4. **Start using Zsh** (after reboot, Zsh will be your default shell):
+5. **OpenCode server** (AI assistant, auto-starts on boot):
+   ```bash
+   sudo systemctl status opencode-server
+   # Access at http://<server-ip>:4096
+   ```
+
+6. **Start using Zsh** (after reboot, Zsh will be your default shell):
    - History is configured with 10,000 entries
    - Arrow keys search through history intelligently
    - Shared history between terminal sessions

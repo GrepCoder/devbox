@@ -151,6 +151,19 @@ else
     echo "✓ Helm already installed"
 fi
 
+# Install GitHub CLI
+echo "🐙 Installing GitHub CLI..."
+if ! command -v gh &> /dev/null; then
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+    sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+    sudo apt update
+    sudo apt install -y gh
+    echo "✓ GitHub CLI installed successfully"
+else
+    echo "✓ GitHub CLI already installed"
+fi
+
 # Install Google Cloud CLI
 echo "☁️  Installing Google Cloud CLI..."
 if ! command -v gcloud &> /dev/null; then
@@ -354,6 +367,7 @@ echo "  Azure CLI:   $(az --version | head -1)"
 echo "  Terraform:   $(terraform --version | head -1)"
 echo "  kubectl:     $(kubectl version --client --short 2>/dev/null || echo 'kubectl installed')
   Helm:        $(helm version --short 2>/dev/null | cut -d'+' -f1 || echo 'helm installed')"
+echo "  GitHub CLI:  $(gh --version | head -1)"
 echo "  Google Cloud: $(gcloud --version | head -1)"
 echo "  Zsh:         $(zsh --version)"
 echo "  OpenCode:    $(opencode --version 2>/dev/null || echo 'OpenCode installed')"
